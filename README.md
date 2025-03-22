@@ -33,10 +33,13 @@ python ds_finetune.py
 
 - `model_name`: "deepseek-ai/deepseek-coder-7b-base"
 - `max_length`: 512
-- `per_device_train_batch_size`: 4
-- `gradient_accumulation_steps`: 4
+- `per_device_train_batch_size`: 2
+- `gradient_accumulation_steps`: 8
 - `learning_rate`: 2e-4
 - `num_train_epochs`: 5
+- `load_in_8bit`: True
+- `lora_r`: 4
+- `lora_alpha`: 8
 
 ## Çıktılar
 
@@ -46,14 +49,26 @@ python ds_finetune.py
 ## Sistem Gereksinimleri
 
 - Python 3.8+
-- CUDA destekli GPU (en az 48GB VRAM önerilir)
+- CUDA destekli GPU (NVIDIA A5000 24GB VRAM)
 - En az 32GB RAM
 - En az 100GB disk alanı
 
-## Notlar
+## Optimizasyonlar
 
-- Model 7B parametre içerir
-- A6000 GPU için optimize edilmiştir
-- LoRA fine-tuning kullanır
+- 8-bit quantization kullanılıyor
+- Düşük batch size (2) ve yüksek gradient accumulation (8)
+- LoRA fine-tuning (r=4, alpha=8)
 - Gradient checkpointing aktif
-- FP16 precision kullanır
+- FP16 precision
+- Düşük CPU bellek kullanımı
+
+## Veri Seti
+
+Veri seti formatı için `example_dataset.json` dosyasına bakınız. Veri seti şu yapıda olmalıdır:
+
+- Train ve validation split'leri
+- Her örnek için:
+  - Soru
+  - Seçenekler
+  - Doğru cevap
+  - Açıklama
