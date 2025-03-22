@@ -4,7 +4,7 @@ from typing import Optional
 
 @dataclass
 class ModelConfig:
-    model_name: str = "/mnt/7bmodel/deepseek-moe-16b-base-v1.5"
+    model_name: str = "deepseek-ai/deepseek-llm-7b-base"
     max_length: int = 128
     torch_dtype: str = "float16"
     low_cpu_mem_usage: bool = True
