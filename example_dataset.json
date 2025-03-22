@@ -1,0 +1,12 @@
+{
+    "train": [
+        {
+            "text": "You are a medical expert. Please answer the following medical question by selecting the most appropriate option and explaining your reasoning:\n\nQuestion: What is the most common cause of acute pancreatitis?\n\nOptions:\nA: Alcohol abuse\nB: Gallstones\nC: Trauma\nD: Viral infection\nE: Autoimmune disease\n\nLet's think about this step by step:\n1) First, let's understand the question...\n2) Then, let's analyze each option...\n3) Finally, let's make our decision...\n\nAnswer: B\nExplanation: Based on the medical knowledge and careful analysis of the options, B is the most appropriate choice because gallstones are the most common cause of acute pancreatitis, accounting for approximately 40-50% of cases."
+        }
+    ],
+    "validation": [
+        {
+            "text": "You are a medical expert. Please answer the following medical question by selecting the most appropriate option and explaining your reasoning:\n\nQuestion: Which of the following is a classic symptom of acute appendicitis?\n\nOptions:\nA: Pain starting in the periumbilical region\nB: Pain starting in the right lower quadrant\nC: Pain starting in the left lower quadrant\nD: Pain starting in the epigastric region\nE: Pain starting in the suprapubic region\n\nLet's think about this step by step:\n1) First, let's understand the question...\n2) Then, let's analyze each option...\n3) Finally, let's make our decision...\n\nAnswer: A\nExplanation: Based on the medical knowledge and careful analysis of the options, A is the most appropriate choice because the classic presentation of acute appendicitis begins with periumbilical pain that later migrates to the right lower quadrant."
+        }
+    ]
+} 
