@@ -52,7 +52,7 @@ class LoRAConfig:
 @dataclass
 class TrainingConfig:
     output_dir: str = "./output"
-    num_train_epochs: float = 1.0
+    num_train_epochs: float = 10.0
     per_device_train_batch_size: int = 1
     gradient_accumulation_steps: int = 16  # Daha az adım
     learning_rate: float = 2e-5  # Daha yüksek öğrenme oranı
@@ -81,7 +81,7 @@ class TrainingConfig:
 @dataclass
 class DataConfig:
     dataset_name: str = "medalpaca/medical_meadow_medqa"
-    max_samples: Optional[int] = 2000
+    max_samples: Optional[int] = 10000
     train_split: float = 0.9
     validation_split: float = 0.1
 
