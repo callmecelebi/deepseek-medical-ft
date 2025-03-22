@@ -89,13 +89,38 @@ def setup_model_and_tokenizer(config: Config):
 
 def load_and_prepare_data():
     # Veri setini yükle
-    dataset = load_dataset("json", data_files="medical_qa_dataset.json")
+    dataset = load_dataset(
+        "json",
+        data_files={
+            "train": "medical_qa_dataset.json",
+            "validation": "medical_qa_dataset.json",
+        },
+    )
 
     # Tokenizer'ı yükle
     tokenizer = AutoTokenizer.from_pretrained(
         config.model.model_name, trust_remote_code=True
     )
     tokenizer.pad_token = tokenizer.eos_token
+
+    def format_example(example):
+        # Her örneği formatlayarak text alanı oluştur
+        if isinstance(example, dict):
+            if "question" in example and "options" in example:
+                text = f"Question: {example['question']}\n\nOptions:\n"
+                for opt_key, opt_value in example["options"].items():
+                    text += f"{opt_key}: {opt_value}\n"
+                if "answer" in example:
+                    text += f"\nAnswer: {example['answer']}"
+                if "explanation" in example:
+                    text += f"\nExplanation: {example['explanation']}"
+                return {"text": text}
+            else:
+                return example
+        return {"text": str(example)}
+
+    # Veri setini formatlı hale getir
+    formatted_dataset = dataset.map(format_example)
 
     # Veri setini tokenize et
     def tokenize_function(examples):
@@ -107,8 +132,10 @@ def load_and_prepare_data():
             return_tensors="pt",
         )
 
-    tokenized_dataset = dataset.map(
-        tokenize_function, batched=True, remove_columns=dataset["train"].column_names
+    tokenized_dataset = formatted_dataset.map(
+        tokenize_function,
+        batched=True,
+        remove_columns=formatted_dataset["train"].column_names,
     )
 
     return tokenized_dataset, tokenizer
@@ -142,16 +169,23 @@ def main():
     # Veri setini ve tokenizer'ı yükle
     dataset, tokenizer = load_and_prepare_data()
 
+    # Quantization konfigürasyonunu oluştur
+    quantization_config = BitsAndBytesConfig(
+        load_in_8bit=True,
+        llm_int8_threshold=6.0,
+        llm_int8_has_fp16_weight=False,
+        bnb_8bit_compute_dtype=torch.float16,
+        bnb_8bit_use_double_quant=True,
+        bnb_8bit_quant_type="nf8",
+    )
+
     # Modeli yükle
     model = AutoModelForCausalLM.from_pretrained(
         config.model.model_name,
         torch_dtype=torch.float16,
         low_cpu_mem_usage=config.model.low_cpu_mem_usage,
         device_map=config.model.device_map,
-        load_in_8bit=config.model.load_in_8bit,
-        bnb_8bit_compute_dtype=torch.float16,
-        bnb_8bit_use_double_quant=config.model.bnb_8bit_use_double_quant,
-        bnb_8bit_quant_type=config.model.bnb_8bit_quant_type,
+        quantization_config=quantization_config,
         trust_remote_code=True,
     )
 
